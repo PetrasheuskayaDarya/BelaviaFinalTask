@@ -7,11 +7,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import by.htp.driver.DriverSingleton;
-
-
+import by.htp.entity.PriceValue;
+import by.htp.pages.MainPage;
 
 public class Steps {
+
 	private WebDriver driver;
+	private int numberOfIterations;
 
 	public void initBrowser() {
 		driver = DriverSingleton.getDriver();
@@ -21,7 +23,59 @@ public class Steps {
 		DriverSingleton.closeDriver();
 	}
 
-	public String getTitle() {
-		return driver.getTitle();
+	public void initialBelavia() throws InterruptedException {
+
+		numberOfIterations = numberOfWeeks("01-08-2018", "01-11-2018");
+
+		MainPage hp = new MainPage(driver);
+		hp.openPage();
+		hp.enterDataForTwoWaysFirstDay();
+		pause4Loading(8000);
+		//hp.enterDataOneMoreTime();
+
+		hp.CalendarView();
+		pause4Loading(5000);
+
+		if (numberOfIterations == 1) {
+			hp.getPrices();
+		} else {
+			for (int i = 0; i < numberOfIterations; i++) {
+				hp.getPrices();
+				hp.nextPageSevenDays();
+				pause4Loading(5000);
+			}
+		}
+		hp.leavePage();
+		resultOut(hp);
 	}
+
+	private void pause4Loading(int time) {
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private int numberOfWeeks(String startDate, String endDate) {
+		String[] startDateArr = startDate.split("-");
+		int startMonth = (int) Integer.parseInt(startDateArr[0]) / 7 + Integer.parseInt(startDateArr[1]) * 4
+				+ Integer.parseInt(startDateArr[2]) * 4 * 12;
+		String[] endDateArr = endDate.split("-");
+		int endMonth = (int) Integer.parseInt(endDateArr[0]) / 7 + Integer.parseInt(endDateArr[1]) * 4
+				+ Integer.parseInt(endDateArr[2]) * 4 * 12;
+		int result = endMonth - startMonth;
+		if (result <= 0) {
+			return 1;
+		} else
+			return result;
+	}
+
+	private void resultOut(MainPage page) {
+		PriceValue result = page.findMin();
+		System.out.println(
+				"ћинимальна€ цена равна = " + result.getPrice() + " BYN , вылет туда - обратно: " + result.getDate());
+	}
+
 }
