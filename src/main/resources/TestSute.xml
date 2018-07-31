@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+
+<suite name="SimpleSuite">
+	<test name="RunBelaviaTask">
+
+		<groups>
+			<run>
+				<include name="check min price"></include>
+			</run>
+		</groups>
+
+		<classes>
+			<class name="by.htp.test.BelaviaRunner"></class>
+			<class name="by.htp.test.BaseTest"></class>
+			<class name="by.htp.steps.Steps"></class>
+			<class name="by.htp.pages.MainPage"></class>
+			<class name="by.htp.pages.BasePage"></class>
+			<class name="by.htp.driver.DriverSingleton"></class>
+			<class name="by.htp.entity.PriceValue"></class>
+			<class name="by.htp.pages.OutboundPage"></class>
+			<class name="by.htp.pages.MainPage"></class>
+		</classes>
+
+	</test>
+</suite>

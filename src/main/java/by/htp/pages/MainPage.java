@@ -16,7 +16,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import by.htp.entity.PriceValue;
 
-public class MainPage extends AbstractPage {
+public class MainPage extends BasePage {
 	String currency = "BYN";
 
 	private JavascriptExecutor executor;
@@ -109,7 +109,6 @@ public class MainPage extends AbstractPage {
 		chooseLastDate.click();
 		searchButton.click();
 	}
-
 
 	public void chooseOriginLocationFromDropDown() {
 		List<WebElement> allOriginLocations = driver.findElements(By.xpath("//*[@id='ui-id-2']/li/a/strong"));

@@ -14,7 +14,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import by.htp.entity.PriceValue;
 
-public class OutboundPage extends AbstractPage {
+public class OutboundPage extends BasePage {
 	private List<WebElement> listOfPrices;
 	private List<WebElement> listOfDates;
 	private List<PriceValue> values = new ArrayList<PriceValue>();

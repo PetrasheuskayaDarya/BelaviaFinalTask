@@ -29,14 +29,14 @@ public class Steps {
 		numberOfIterations = numberOfWeeks("01-08-2018", "01-11-2018");
 
 		MainPage hp = new MainPage(driver);
-		OutboundPage op =new OutboundPage(driver);
+		OutboundPage op = new OutboundPage(driver);
 		hp.openPage();
 		hp.enterOriginAndDestinationLocationUsingJS();
 		hp.enterDataForTwoWays();
-		pause4Loading(8000);
-		
+		pause4Loading(3000);
+
 		op.CalendarView();
-		pause4Loading(5000);
+		pause4Loading(3000);
 
 		if (numberOfIterations == 1) {
 			op.getPrices();
@@ -78,5 +78,7 @@ public class Steps {
 		System.out.println(
 				"ћинимальна€ цена равна = " + result.getPrice() + " BYN , вылет туда - обратно: " + result.getDate());
 	}
+	
+
 
 }

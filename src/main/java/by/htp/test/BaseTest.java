@@ -1,14 +1,11 @@
-package by.htp;
+package by.htp.test;
 
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import by.htp.steps.Steps;
 
-public class BelaviaRunner {
-
+public class BaseTest {
 	Steps steps = new Steps();
 
 	@BeforeMethod(description = "Init browser")
@@ -17,14 +14,8 @@ public class BelaviaRunner {
 		steps.initBrowser();
 	}
 
-	@Test
-	public void GetAllData() throws InterruptedException {
-		steps.initialBelavia();
-	}
-
 	@AfterMethod(description = "Stop Browser")
 	public void stopBrowser() {
 		steps.closeDriver();
 	}
-
 }
