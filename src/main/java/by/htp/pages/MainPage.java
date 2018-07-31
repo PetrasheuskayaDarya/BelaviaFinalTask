@@ -17,22 +17,19 @@ import org.openqa.selenium.support.PageFactory;
 import by.htp.entity.PriceValue;
 
 public class MainPage extends AbstractPage {
+	String currency = "BYN";
 
-	private List<WebElement> listOfPrices;
-	private List<WebElement> listOfDates;
-	private List<PriceValue> values = new ArrayList<PriceValue>();
-	
 	private JavascriptExecutor executor;
 	private String js;
 
 	private final String BASE_URL = "https://belavia.by/";
-	
+
 	@FindBy(id = "OriginLocation")
 	private WebElement jsOriginLocation;
 
 	@FindBy(xpath = "//*[@id='OriginLocation_Combobox']")
 	private WebElement originLocation;
-	
+
 	@FindBy(id = "DestinationLocation")
 	private WebElement jsDestinationLocation;
 
@@ -78,21 +75,6 @@ public class MainPage extends AbstractPage {
 	@FindBy(xpath = "//*[@id='calendar']/div/div[2]/table/tbody/tr[1]/td[5]/a")
 	private WebElement chooseLastDate;
 
-	@FindBy(xpath = "//*[@id='outbound']/div[1]/div/div[2]/a")
-	private WebElement seePricesFor7Days;
-
-	@FindBy(xpath = "//*[@id='matrix']/div[1]/div[1]/div[2]/a")
-	private WebElement nextSevenDays;
-
-	@FindBy(xpath = "//*[@id='ibe']/form/div[1]/div[1]/div/a/i")
-	private WebElement dropDownOriginLocation;
-
-	@FindBy(xpath = "//*[@id='ui-id-2']/li/a")
-	private WebElement allOriginLocation;
-
-	@FindBy(xpath = "//*[@id='ui-id-953']")
-	private WebElement minsk;
-
 	public MainPage(WebDriver driver) {
 		super(driver);
 		PageFactory.initElements(this.driver, this);
@@ -101,74 +83,33 @@ public class MainPage extends AbstractPage {
 	@Override
 	public void openPage() {
 		driver.navigate().to(BASE_URL);
+
 	}
 
-	public void enterDataForTwoWaysFirstDay() {
+	public void enterOriginAndDestinationLocationUsingJS() {
 		executor = (JavascriptExecutor) driver;
 
 		js = "var s= document.getElementById('OriginLocation');s.type = 'visible'";
 		executor.executeScript(js, this.jsOriginLocation);
 		this.jsOriginLocation.sendKeys("MSQ");
 		this.originLocation.sendKeys("Минск (MSQ) BY");
-		
+
 		js = "var s= document.getElementById('DestinationLocation');s.type = 'visible'";
 		executor.executeScript(js, this.jsDestinationLocation);
 		this.jsDestinationLocation.sendKeys("RIX");
 		this.destinationLocation.sendKeys("Riga (RIX), LV");
-		
+	}
 
+	public void enterDataForTwoWays() {
 		radioButtonReturn.click();
 		departureDate.click();
 		chooseStartDate.click();
 		chooseNextMonthOnCalendar.click();
 		chooseNextMonthOnCalendar.click();
 		chooseLastDate.click();
-		//Thread.sleep(5000);
 		searchButton.click();
 	}
 
-	public void enterDataOneMoreTime() {
-		originLocation.sendKeys("Minsk");
-		destinationLocation.sendKeys("Riga");
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		searchButton2.click();
-
-	}
-
-	public void CalendarView() {
-		if (seePricesFor7Days.isDisplayed()) {
-			seePricesFor7Days.click();
-		}
-	}
-
-	public void nextPageSevenDays() {
-		nextSevenDays.click();
-	}
-
-	public void getPrices() {
-		listOfPrices = driver.findElements(By.className("price"));
-		listOfDates = driver.findElements(By.name("date"));
-		int price;
-		PriceValue pv;
-		String date = "";
-
-		Iterator<WebElement> dates = listOfDates.iterator();
-
-		for (WebElement we : listOfPrices) {
-			if (we.getText().toUpperCase().endsWith("BYN")) {
-				price = Integer.parseInt(we.getText().substring(0, 3));
-				if (dates.hasNext()) {
-					date = dates.next().getAttribute("value");
-				}
-				pv = new PriceValue(price, date);
-				values.add(pv);
-			}
-		}
-	}
 
 	public void chooseOriginLocationFromDropDown() {
 		List<WebElement> allOriginLocations = driver.findElements(By.xpath("//*[@id='ui-id-2']/li/a/strong"));
@@ -179,11 +120,6 @@ public class MainPage extends AbstractPage {
 				allOriginLocations.get(i).click();
 			}
 		}
-
-	}
-
-	public PriceValue findMin() {
-		return Collections.min(values);
 	}
 
 	public void leavePage() {

@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import by.htp.driver.DriverSingleton;
 import by.htp.entity.PriceValue;
 import by.htp.pages.MainPage;
+import by.htp.pages.OutboundPage;
 
 public class Steps {
 
@@ -28,32 +29,32 @@ public class Steps {
 		numberOfIterations = numberOfWeeks("01-08-2018", "01-11-2018");
 
 		MainPage hp = new MainPage(driver);
+		OutboundPage op =new OutboundPage(driver);
 		hp.openPage();
-		hp.enterDataForTwoWaysFirstDay();
+		hp.enterOriginAndDestinationLocationUsingJS();
+		hp.enterDataForTwoWays();
 		pause4Loading(8000);
-		// hp.enterDataOneMoreTime();
-
-		hp.CalendarView();
+		
+		op.CalendarView();
 		pause4Loading(5000);
 
 		if (numberOfIterations == 1) {
-			hp.getPrices();
+			op.getPrices();
 		} else {
 			for (int i = 0; i < numberOfIterations; i++) {
-				hp.getPrices();
-				hp.nextPageSevenDays();
+				op.getPrices();
+				op.nextPageSevenDays();
 				pause4Loading(5000);
 			}
 		}
-		hp.leavePage();
-		resultOut(hp);
+		op.leavePage();
+		resultOut(op);
 	}
 
 	private void pause4Loading(int time) {
 		try {
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -72,7 +73,7 @@ public class Steps {
 			return result;
 	}
 
-	private void resultOut(MainPage page) {
+	private void resultOut(OutboundPage page) {
 		PriceValue result = page.findMin();
 		System.out.println(
 				"ћинимальна€ цена равна = " + result.getPrice() + " BYN , вылет туда - обратно: " + result.getDate());
