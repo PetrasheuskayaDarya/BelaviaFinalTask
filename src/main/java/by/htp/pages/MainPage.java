@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -20,11 +21,20 @@ public class MainPage extends AbstractPage {
 	private List<WebElement> listOfPrices;
 	private List<WebElement> listOfDates;
 	private List<PriceValue> values = new ArrayList<PriceValue>();
+	
+	private JavascriptExecutor executor;
+	private String js;
 
 	private final String BASE_URL = "https://belavia.by/";
+	
+	@FindBy(id = "OriginLocation")
+	private WebElement jsOriginLocation;
 
 	@FindBy(xpath = "//*[@id='OriginLocation_Combobox']")
 	private WebElement originLocation;
+	
+	@FindBy(id = "DestinationLocation")
+	private WebElement jsDestinationLocation;
 
 	@FindBy(xpath = "//*[@id='DestinationLocation_Combobox']")
 	private WebElement destinationLocation;
@@ -71,11 +81,17 @@ public class MainPage extends AbstractPage {
 	@FindBy(xpath = "//*[@id='outbound']/div[1]/div/div[2]/a")
 	private WebElement seePricesFor7Days;
 
-	// @FindBy(css = "#outbound > div.hdr > div > div.col-mb-5.text-right > a")
-	// private WebElement seePricesFor7Days;
-
 	@FindBy(xpath = "//*[@id='matrix']/div[1]/div[1]/div[2]/a")
 	private WebElement nextSevenDays;
+
+	@FindBy(xpath = "//*[@id='ibe']/form/div[1]/div[1]/div/a/i")
+	private WebElement dropDownOriginLocation;
+
+	@FindBy(xpath = "//*[@id='ui-id-2']/li/a")
+	private WebElement allOriginLocation;
+
+	@FindBy(xpath = "//*[@id='ui-id-953']")
+	private WebElement minsk;
 
 	public MainPage(WebDriver driver) {
 		super(driver);
@@ -87,22 +103,28 @@ public class MainPage extends AbstractPage {
 		driver.navigate().to(BASE_URL);
 	}
 
-	public void enterDataForTwoWaysFirstDay() throws InterruptedException {
-		originLocation.sendKeys("Minsk");
-		destinationLocation.sendKeys("Riga");
+	public void enterDataForTwoWaysFirstDay() {
+		executor = (JavascriptExecutor) driver;
+
+		js = "var s= document.getElementById('OriginLocation');s.type = 'visible'";
+		executor.executeScript(js, this.jsOriginLocation);
+		this.jsOriginLocation.sendKeys("MSQ");
+		this.originLocation.sendKeys("Минск (MSQ) BY");
+		
+		js = "var s= document.getElementById('DestinationLocation');s.type = 'visible'";
+		executor.executeScript(js, this.jsDestinationLocation);
+		this.jsDestinationLocation.sendKeys("RIX");
+		this.destinationLocation.sendKeys("Riga (RIX), LV");
+		
+
 		radioButtonReturn.click();
 		departureDate.click();
 		chooseStartDate.click();
 		chooseNextMonthOnCalendar.click();
 		chooseNextMonthOnCalendar.click();
 		chooseLastDate.click();
-		Thread.sleep(5000);
+		//Thread.sleep(5000);
 		searchButton.click();
-		// seePricesFor7Days.click();
-		// originLocation.sendKeys("Minsk");
-		// destinationLocation.sendKeys("Riga");
-		// Thread.sleep(5000);
-		// searchButton2.click();
 	}
 
 	public void enterDataOneMoreTime() {
@@ -111,7 +133,6 @@ public class MainPage extends AbstractPage {
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		searchButton2.click();
@@ -121,13 +142,6 @@ public class MainPage extends AbstractPage {
 	public void CalendarView() {
 		if (seePricesFor7Days.isDisplayed()) {
 			seePricesFor7Days.click();
-			// try {
-			// Thread.sleep(10000);
-			// } catch (InterruptedException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// seePricesFor7Days.click();
 		}
 	}
 
@@ -154,6 +168,18 @@ public class MainPage extends AbstractPage {
 				values.add(pv);
 			}
 		}
+	}
+
+	public void chooseOriginLocationFromDropDown() {
+		List<WebElement> allOriginLocations = driver.findElements(By.xpath("//*[@id='ui-id-2']/li/a/strong"));
+		String element;
+		for (int i = 0; i < allOriginLocations.size(); i++) {
+			element = allOriginLocations.get(i).getText();
+			if (element.equals("Minsk (MSQ), BY")) {
+				allOriginLocations.get(i).click();
+			}
+		}
+
 	}
 
 	public PriceValue findMin() {
